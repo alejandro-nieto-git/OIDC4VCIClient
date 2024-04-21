@@ -1,15 +1,10 @@
 const express = require("express")
 const morgan = require("morgan")
-import router from "./routes/routes"
+import router from "../routes/routes"
 import session from "express-session";
 import * as path from 'node:path';
 import dotenv from 'dotenv';
-import { OID4VCIServer } from "@sphereon/oid4vci-issuer-server";
-import { CredentialSupportedBuilderV1_11, VcIssuerBuilder } from "@sphereon/oid4vci-issuer";
-import {
-    OID4VCICredentialFormat,
-} from '@sphereon/oid4vci-common'
-import { PORT } from "./utils/const";
+import { PORT } from "../utils/const";
 
 const app = express()
 
@@ -67,7 +62,5 @@ app.use((req: any, res: any, next: any) => {
 
 app.listen(PORT, () => {
     dotenv.config();
-
-    );
     console.log(`Backend wallet de titulaciones digitales desplegado en: http://localhost:${PORT}`)
-})
+});
