@@ -5,8 +5,18 @@ import session from "express-session";
 import * as path from 'node:path';
 import dotenv from 'dotenv';
 import { PORT } from "../utils/const";
+import fs from 'fs';
+import https from 'https';
+
+dotenv.config();
 
 const app = express()
+
+// Specify SSL/TLS options
+const options = {
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+};
 
 // Logging
 app.use(morgan("dev"))
@@ -43,12 +53,6 @@ app.use(session({
     name: "issuerTitulaciones"
 }))
 
-/** Static public files */
-app.use(express.static("static/"));
-
-app.set('views', path.resolve('./views'));
-app.set('view engine', 'html');
-
 /** Routes */
 app.use("/", router)
 
@@ -60,7 +64,7 @@ app.use((req: any, res: any, next: any) => {
     });
 });
 
-app.listen(PORT, () => {
-    dotenv.config();
-    console.log(`Backend wallet de titulaciones digitales desplegado en: http://localhost:${PORT}`)
+const server = https.createServer(options, app);
+server.listen(PORT, () => {
+    console.log(`Backend wallet de titulaciones digitales desplegado en: https://localhost:${PORT}`);
 });

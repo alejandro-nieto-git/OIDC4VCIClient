@@ -5,14 +5,6 @@ import { DIDDocument } from 'did-resolver';
 import {
   Alg,
   ProofOfPossessionCallbacks,
-  // CNonceState,
-  // CredentialSupported,
-  // IssuerCredentialSubjectDisplay,
-  // IssueStatus,
-  // Jwt,
-  // JwtVerifyResult,
-  // OpenId4VCIVersion,
-  // ProofOfPossession,
 } from '@sphereon/oid4vci-common'
 import { KeyLike } from 'jose';
 import { generateSignCallback } from '../utils/utils';
@@ -20,15 +12,21 @@ import { generateSignCallback } from '../utils/utils';
 const debugLog = debug("Wallet Titulaciones Digitales:debug ");
 const errorLog = debug("Wallet Titulaciones Digitales:error ");
 
+/**
+ * Represents a simplified wallet for demo purposes. It only holds one pair of public/private keys and it's 
+ * DID.
+ */
 export class WalletTitulacionesDigitalesUVa {
   private client: OpenID4VCIClient|undefined;
-  private keys: any;
+  private keys: Array<KeyLike>;
+  private did: Map<string, string>;
   private keyInUse: KeyLike;
 
-  constructor(keys: {}) {
+  constructor(keys: [any], did: any)  {
     this.keys = keys;
+    this.did = did;
     this.client = undefined; 
-    this.keyInUse = this.keys["privateKey"];
+    this.keyInUse = this.keys[0];
 
   }
 
@@ -44,10 +42,10 @@ export class WalletTitulacionesDigitalesUVa {
 
     this.client = await OpenID4VCIClient.fromURI({
       uri: oidcURI,
-      kid: "did:xxxx" + "#key-1",
+      kid: process.env.USER_DID + "#key-1",
       alg: Alg.ES256, // The signing Algorithm we will use. You can defer this also to when the acquireCredential method is called
       clientId: 'test-clientId', // The clientId if the Authrozation Service requires it.  If a clientId is needed you can defer this also to when the acquireAccessToken method is called
-      retrieveServerMetadata: true, // Already retrieve the server metadata. Can also be done afterwards by invoking a method yourself.
+      retrieveServerMetadata: false, // Already retrieve the server metadata. Can also be done afterwards by invoking a method yourself.
     });
 
     debugLog("Issuer is " + this.client.getIssuer()); // https://issuer.research.identiproof.io
