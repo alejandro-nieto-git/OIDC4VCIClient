@@ -45,7 +45,7 @@ export class WalletTitulacionesDigitalesUVa {
       kid: process.env.USER_DID + "#key-1",
       alg: Alg.ES256, // The signing Algorithm we will use. You can defer this also to when the acquireCredential method is called
       clientId: 'test-clientId', // The clientId if the Authrozation Service requires it.  If a clientId is needed you can defer this also to when the acquireAccessToken method is called
-      retrieveServerMetadata: false, // Already retrieve the server metadata. Can also be done afterwards by invoking a method yourself.
+      retrieveServerMetadata: true, // Already retrieve the server metadata. Can also be done afterwards by invoking a method yourself.
     });
 
     debugLog("Issuer is " + this.client.getIssuer()); // https://issuer.research.identiproof.io
