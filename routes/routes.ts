@@ -25,8 +25,9 @@ router.post('/initiateIssuance', async (req: any, resp: any ) => {
         wallet = new WalletTitulacionesDigitalesUVa([privateKey], { privateKey: process.env.USER_DID });
         wallet.setActiveDid(privateKey!);
 
-        wallet.initiateIssuance(req.body.oidcURI);
+        await wallet.initiateIssuance(req.body.oidcURI);
         resp.status(200);
+        resp.end();
     
    } catch (error) {
         console.log(error);
