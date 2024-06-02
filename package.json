@@ -6,6 +6,7 @@
         "debug": "^4.3.4",
         "did-resolver": "^4.1.0",
         "dotenv": "^16.4.5",
+        "elliptic": "^6.5.5",
         "express": "^4.19.2",
         "express-session": "^1.18.0",
         "jose": "^5.2.4",
@@ -13,6 +14,7 @@
     },
     "devDependencies": {
         "@types/debug": "^4.1.12",
+        "@types/elliptic": "^6.4.18",
         "@types/node": "^20.12.7",
         "nodemon": "^3.1.0"
     },

@@ -19,18 +19,18 @@ const errorLog = debug("Wallet Titulaciones Digitales:error ");
 export class WalletTitulacionesDigitalesUVa {
   private client: OpenID4VCIClient|undefined;
   private keys: Array<KeyLike>;
-  private did: Map<string, string>;
+  private privateKeysToDids: Map<KeyLike, string>;
   private keyInUse: KeyLike;
 
-  constructor(keys: [any], did: any)  {
+  constructor(keys: Array<KeyLike>, privateKeysToDids: Map<KeyLike, string>)  {
     this.keys = keys;
-    this.did = did;
+    this.privateKeysToDids = privateKeysToDids;
     this.client = undefined; 
     this.keyInUse = this.keys[0];
 
   }
 
-  public setActiveDid(privateKey: KeyLike) {
+  public setActiveKey(privateKey: KeyLike) {
     this.keyInUse = privateKey;
   }
 
@@ -54,22 +54,29 @@ export class WalletTitulacionesDigitalesUVa {
   }
 
   public async tokenRequest(pin: string) {
-    debugLog("Token request initiated");
+    try {
+      debugLog("Token request initiated");
 
-    const accessToken = await this.client!.acquireAccessToken({ pin: pin });
-    debugLog("Access Token acquired: " + accessToken);
+      const accessToken = await this.client!.acquireAccessToken({ pin: pin });
+      debugLog("Access Token acquired: " + accessToken);
 
-    debugLog("Initiating Credential Request");
-    let signCallback = generateSignCallback(this.keyInUse);
-    const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
-      signCallback, 
-    };
-    const credentialResponse = await this.client!.acquireCredentials({
-      credentialTypes: 'TitulacionDigital',
-      proofCallbacks: callbacks ,
-      format: 'jwt_vc_json',
-      alg: Alg.ES256K,
-      kid: 'did:ethr:DE19d461d3E3Fc360D392B512fa09aBcB6A3cba3#key-1',
-    });
+      debugLog("Initiating Credential Request");
+      let signCallback = generateSignCallback(this.keyInUse);
+      const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
+        signCallback, 
+      };
+      const credentialResponse = await this.client!.acquireCredentials({
+        credentialTypes: 'TitulacionDigital',
+        proofCallbacks: callbacks ,
+        format: 'jwt_vc_json',
+        alg: Alg.ES256K,
+        kid: 'did:ethr:DE19d461d3E3Fc360D392B512fa09aBcB6A3cba3#key-1',
+      });
+
+      return credentialResponse;
+
+    } catch (error) {
+      throw error;
+    }
   }
 }

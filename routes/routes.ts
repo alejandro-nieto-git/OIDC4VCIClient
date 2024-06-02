@@ -1,10 +1,13 @@
 import { Jwt, ProofOfPossessionCallbacks } from '@sphereon/oid4vci-common';
 import { WalletTitulacionesDigitalesUVa } from '../api/walletTitulacionesDigitales';
 import { generateSignCallback } from '../utils/utils';
-import jose from 'jose';
-import { KeyLike } from 'jose';
 import { DIDDocument } from 'did-resolver';
 import { debug } from "debug";
+import { hexToUint8Array } from '../utils/utils';
+import { importJWK, JWK, KeyLike} from 'jose';
+import { ec as EC } from 'elliptic';
+
+
 
 const debugLog = debug("Routes:debug ");
 
@@ -20,10 +23,29 @@ router.get('/health', async (req: any, resp: any ) => {
 router.post('/initiateIssuance', async (req: any, resp: any ) => { 
     try {
         debugLog(req.body);
-        var privateKey = process.env.USER_PRIVATE_KEY! as unknown as KeyLike;
-        let did = process.env.USER_DID;
-        wallet = new WalletTitulacionesDigitalesUVa([privateKey], { privateKey: process.env.USER_DID });
-        wallet.setActiveDid(privateKey!);
+        const privateKeyBuffer = Buffer.from(process.env.USER_PRIVATE_KEY!.slice(2), 'hex');
+
+        const ec = new EC('secp256k1');
+        const key = ec.keyFromPrivate(privateKeyBuffer);
+
+        const pubPoint = key.getPublic();
+        const x = pubPoint.getX().toArrayLike(Buffer, 'be', 32);
+        const y = pubPoint.getY().toArrayLike(Buffer, 'be', 32);
+
+        const privateKeyJWK: JWK = {
+            kty: 'EC',
+            crv: 'secp256k1',
+            x: Buffer.from(x).toString('base64url'),
+            y: Buffer.from(y).toString('base64url'),
+            d: privateKeyBuffer.toString('base64url')
+        };
+        
+        var privateKey = await importJWK(privateKeyJWK, 'ES256K') as KeyLike;
+
+        let keysToDids = new Map<KeyLike, string>();
+        keysToDids.set(privateKey, process.env.USER_DID!);
+        wallet = new WalletTitulacionesDigitalesUVa([privateKey], keysToDids);
+        wallet.setActiveKey(privateKey);
 
         await wallet.initiateIssuance(req.body.oidcURI);
         resp.status(200);
@@ -35,8 +57,16 @@ router.post('/initiateIssuance', async (req: any, resp: any ) => {
 })
 
 router.post('/tokenRequest', async (req: any, resp: any) => { 
-    wallet.tokenRequest(req.body.pin);
-    resp.status(200);
+    try {
+        resp.json(wallet.tokenRequest(req.body.pin));
+        resp.status(200);
+        resp.end();
+    } catch (error) {
+        console.log(error);
+        resp.status(400);
+        resp.end();
+        
+    }
 })
 
 export default router;
