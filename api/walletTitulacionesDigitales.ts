@@ -8,6 +8,7 @@ import {
 } from '@sphereon/oid4vci-common'
 import { KeyLike } from 'jose';
 import { generateSignCallback } from '../utils/utils';
+import { W3CVerifiableCredential } from '@sphereon/ssi-types';
 
 const debugLog = debug("Wallet Titulaciones Digitales:debug ");
 const errorLog = debug("Wallet Titulaciones Digitales:error ");
@@ -65,18 +66,32 @@ export class WalletTitulacionesDigitalesUVa {
       const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
         signCallback, 
       };
-      const credentialResponse = await this.client!.acquireCredentials({
-        credentialTypes: 'TitulacionDigital',
-        proofCallbacks: callbacks ,
-        format: 'jwt_vc_json',
-        alg: Alg.ES256K,
-        kid: 'did:ethr:DE19d461d3E3Fc360D392B512fa09aBcB6A3cba3#key-1',
-      });
 
-      return credentialResponse;
-
+      
     } catch (error) {
       throw error;
     }
+  }
+
+  public async credentialRequest() {
+    debugLog("Credential request initiated");
+
+    let signCallback = generateSignCallback(this.keyInUse);
+    const callbacks: ProofOfPossessionCallbacks<DIDDocument> = {
+      signCallback, 
+    };
+
+    const credentialResponse = await this.client!.acquireCredentials({
+      credentialTypes: ['TitulacionDigital'],
+      proofCallbacks: callbacks ,
+      format: 'jwt_vc_json',
+      alg: Alg.ES256K,
+      kid: 'did:ethr:DE19d461d3E3Fc360D392B512fa09aBcB6A3cba3#key-1',
+    });
+
+    delete (credentialResponse.credential! as any).proof;
+    debugLog("Credential acquired: " + JSON.stringify(credentialResponse));
+
+    return credentialResponse;
   }
 }

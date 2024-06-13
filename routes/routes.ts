@@ -48,7 +48,7 @@ router.post('/initiateIssuance', async (req: any, resp: any ) => {
         wallet.setActiveKey(privateKey);
 
         await wallet.initiateIssuance(req.body.oidcURI);
-        resp.status(200);
+        resp.status(201);
         resp.end();
     
    } catch (error) {
@@ -58,11 +58,26 @@ router.post('/initiateIssuance', async (req: any, resp: any ) => {
 
 router.post('/tokenRequest', async (req: any, resp: any) => { 
     try {
-        resp.json(wallet.tokenRequest(req.body.pin));
-        resp.status(200);
+        wallet.tokenRequest(req.body.pin);
+        resp.status(201);
         resp.end();
     } catch (error) {
         console.log(error);
+        resp.send(error);
+        resp.status(400);
+        resp.end();
+        
+    }
+})
+
+router.post('/credentialRequest', async (req: any, resp: any) => { 
+    try {
+        resp.json(await wallet.credentialRequest());
+        resp.status(201);
+        resp.end();
+    } catch (error) {
+        console.log(error);
+        resp.send(error);
         resp.status(400);
         resp.end();
         

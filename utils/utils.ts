@@ -6,8 +6,8 @@ import { KeyObject } from "crypto";
 
 export function generateSignCallback(privateKey: KeyLike) {
     async function signCallback(args: Jwt, kid?: string): Promise<string> {
-        return await new jose.SignJWT({ ...args.payload })
-            .setProtectedHeader({ alg: args.header.alg })
+        return await new jose.SignJWT({ ...args.payload, kid })
+            .setProtectedHeader({ alg: args.header.alg, typ: 'openid4vci-proof+jwt'})
             .setIssuedAt()
             .setIssuer(kid!)
             .setAudience(args.payload.aud!)
