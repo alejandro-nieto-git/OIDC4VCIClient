@@ -39,7 +39,7 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+node_modules/*
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
@@ -131,3 +131,8 @@ package-lock.json
 package-lock.json
 src/.DS_Store
 src/utils/.DS_Store
+
+!node_modules/@sphereon/oidc4vci-client
+!node_modules/@sphereon/
+!node_modules/
+
