@@ -22,13 +22,14 @@ export class WalletTitulacionesDigitalesUVa {
   private keys: Array<KeyLike>;
   private privateKeysToDids: Map<KeyLike, string>;
   private keyInUse: KeyLike;
+  private credentialToIssueDefinition: string;
 
   constructor(keys: Array<KeyLike>, privateKeysToDids: Map<KeyLike, string>)  {
     this.keys = keys;
     this.privateKeysToDids = privateKeysToDids;
     this.client = undefined; 
     this.keyInUse = this.keys[0];
-
+    this.credentialToIssueDefinition = "";
   }
 
   public setActiveKey(privateKey: KeyLike) {
@@ -48,6 +49,10 @@ export class WalletTitulacionesDigitalesUVa {
       clientId: 'test-clientId', // The clientId if the Authrozation Service requires it.  If a clientId is needed you can defer this also to when the acquireAccessToken method is called
       retrieveServerMetadata: true, // Already retrieve the server metadata. Can also be done afterwards by invoking a method yourself.
     });
+    
+    let credentialDefinition = decodeURIComponent(oidcURI).split('"credential_definition":')[1];
+    credentialDefinition = JSON.parse('{"credential_definition":' + credentialDefinition)["credential_definition"];
+    this.credentialToIssueDefinition = credentialDefinition;
 
     debugLog("Issuer is " + this.client.getIssuer()); // https://issuer.research.identiproof.io
     debugLog("Credential endpoint is" + this.client.getCredentialEndpoint()); // https://issuer.research.identiproof.io/credential
