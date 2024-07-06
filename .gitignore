@@ -134,4 +134,5 @@ src/utils/.DS_Store
 !node_modules/@sphereon/oidc4vci-client/*
 !node_modules/@sphereon/
 !node_modules/
+dist
 
