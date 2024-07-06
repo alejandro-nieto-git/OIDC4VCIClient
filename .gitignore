@@ -88,7 +88,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -132,7 +131,7 @@ package-lock.json
 src/.DS_Store
 src/utils/.DS_Store
 
-!node_modules/@sphereon/oidc4vci-client
+!node_modules/@sphereon/oidc4vci-client/*
 !node_modules/@sphereon/
 !node_modules/
 
