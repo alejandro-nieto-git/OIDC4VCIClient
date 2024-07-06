@@ -4,6 +4,7 @@ import * as jose from 'jose';
 import { DIDDocument } from 'did-resolver';
 import {
   Alg,
+  JsonLdIssuerCredentialDefinition,
   ProofOfPossessionCallbacks,
 } from '@sphereon/oid4vci-common'
 import { KeyLike } from 'jose';
@@ -87,6 +88,7 @@ export class WalletTitulacionesDigitalesUVa {
     };
 
     const credentialResponse = await this.client!.acquireCredentials({
+      credentialDefinition: this.credentialToIssueDefinition as unknown as JsonLdIssuerCredentialDefinition,
       credentialTypes: ['TitulacionDigital'],
       proofCallbacks: callbacks ,
       format: 'jwt_vc_json',
