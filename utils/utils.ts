@@ -18,6 +18,13 @@ export function generateSignCallback(privateKey: KeyLike) {
     return signCallback;
 }
 
+/**
+ * Converts a hexadecimal string to a Uint8Array.
+ * 
+ * @param hex - The hexadecimal string to convert.
+ * @returns The Uint8Array representation of the hexadecimal string.
+ * @throws Error if the input hex string is invalid.
+ */
 export function hexToUint8Array(hex: string): Uint8Array {
     if (hex.length % 2 !== 0) throw new Error('Invalid hex string');
     const array = new Uint8Array(hex.length / 2);

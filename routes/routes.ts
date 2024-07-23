@@ -8,7 +8,6 @@ import { importJWK, JWK, KeyLike} from 'jose';
 import { ec as EC } from 'elliptic';
 
 
-
 const debugLog = debug("Routes:debug ");
 
 const express = require("express");

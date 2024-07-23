@@ -15,8 +15,7 @@ const debugLog = debug("Wallet Titulaciones Digitales:debug ");
 const errorLog = debug("Wallet Titulaciones Digitales:error ");
 
 /**
- * Represents a simplified wallet for demo purposes. It only holds one pair of public/private keys and it's 
- * DID.
+ * Represents a simplified wallet for demo purposes for managing digital credentials for Titulaciones Digitales UVa.
  */
 export class WalletTitulacionesDigitalesUVa {
   private client: OpenID4VCIClient|undefined;
@@ -25,6 +24,12 @@ export class WalletTitulacionesDigitalesUVa {
   private keyInUse: KeyLike;
   private credentialToIssueDefinition: string;
 
+  /**
+   * Initializes a WalletTitulacionesDigitales object.
+
+   * @param {Array<KeyLike>} keys - An array of private keys.
+   * @param {Map<KeyLike, string>} privateKeysToDids - A map of private keys to Ethereum DIDs of those keys.
+   */
   constructor(keys: Array<KeyLike>, privateKeysToDids: Map<KeyLike, string>)  {
     this.keys = keys;
     this.privateKeysToDids = privateKeysToDids;
@@ -38,6 +43,12 @@ export class WalletTitulacionesDigitalesUVa {
   }
 
 
+  /**
+   * Initiates the issuance process for a digital credential.
+   * 
+   * @param oidcURI - The OIDC URI for the credential issuance.
+   * @returns A Promise that resolves when the issuance process is initiated.
+   */
   public async initiateIssuance(oidcURI: string) {
     debugLog("Initiating Issuance");
     debugLog("OIDC URI: " + oidcURI);
@@ -46,20 +57,26 @@ export class WalletTitulacionesDigitalesUVa {
     this.client = await OpenID4VCIClient.fromURI({
       uri: oidcURI,
       kid: process.env.USER_DID + "#key-1",
-      alg: Alg.ES256, // The signing Algorithm we will use. You can defer this also to when the acquireCredential method is called
-      clientId: 'test-clientId', // The clientId if the Authrozation Service requires it.  If a clientId is needed you can defer this also to when the acquireAccessToken method is called
-      retrieveServerMetadata: true, // Already retrieve the server metadata. Can also be done afterwards by invoking a method yourself.
+      alg: Alg.ES256,
+      clientId: 'test-clientId',
+      retrieveServerMetadata: true,
     });
     
     let credentialDefinition = decodeURIComponent(oidcURI).split('"credential_definition":')[1];
     credentialDefinition = JSON.parse('{"credential_definition":' + credentialDefinition)["credential_definition"];
     this.credentialToIssueDefinition = credentialDefinition;
 
-    debugLog("Issuer is " + this.client.getIssuer()); // https://issuer.research.identiproof.io
-    debugLog("Credential endpoint is" + this.client.getCredentialEndpoint()); // https://issuer.research.identiproof.io/credential
-    debugLog("Token endpoint is " + this.client.getAccessTokenEndpoint()); // https://auth.research.identiproof.io/oauth2/token
+    debugLog("Issuer is " + this.client.getIssuer()); 
+    debugLog("Credential endpoint is" + this.client.getCredentialEndpoint()); 
+    debugLog("Token endpoint is " + this.client.getAccessTokenEndpoint()); 
   }
 
+  /**
+   * Initiates a token request using the provided PIN.
+   * @param pin - The PIN used for authentication.
+   * @returns A Promise that resolves when the access token is retrieved.
+   * @throws If an error occurs during the token request.
+   */
   public async tokenRequest(pin: string) {
     try {
       debugLog("Token request initiated");
@@ -79,6 +96,11 @@ export class WalletTitulacionesDigitalesUVa {
     }
   }
 
+  /**
+   * Initiates a credential request.
+   * 
+   * @returns A promise that resolves to the credential response.
+   */
   public async credentialRequest() {
     debugLog("Credential request initiated");
 
