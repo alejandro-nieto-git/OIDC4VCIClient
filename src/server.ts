@@ -7,10 +7,15 @@ import dotenv from 'dotenv';
 import { PORT } from "../utils/const";
 import fs from 'fs';
 import https from 'https';
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express()
+
+app.use(cors({
+    origin: 'http://localhost:3000'
+  }));
 
 // Specify SSL/TLS options
 const options = {
@@ -26,20 +31,6 @@ app.use(express.urlencoded({ extended: false }));
 
 /** Takes care of JSON data */
 app.use(express.json());
-
-/** RULES OF OUR API */
-router.use((req: any, res: any, next: any) => {
-    // set the CORS policy
-    res.header('Access-Control-Allow-Origin', '*');
-    // set the CORS headers
-    res.header('Access-Control-Allow-Headers', 'origin, X-Requested-With,Content-Type,Accept, Authorization');
-    // set the CORS method headers
-    if (req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST');
-        return res.status(200).json({});
-    }
-    next();
-});
 
 /** ExpressJS session */
 app.use(session({
