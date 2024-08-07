@@ -19,11 +19,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
   }));
 
-// Specify SSL/TLS options
-const options = {
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert')
-};
 
 // Logging
 app.use(morgan("dev"))
@@ -57,7 +52,7 @@ app.use((req: any, res: any, next: any) => {
     });
 });
 
-const server = https.createServer(options, app);
+const server = https.createServer(app);
 server.listen(PORT, () => {
-    console.log(`Backend wallet de titulaciones digitales desplegado en: https://localhost:${PORT}`);
+    console.log(`Backend wallet de titulaciones digitales desplegado en: http://localhost:${PORT}`);
 });
