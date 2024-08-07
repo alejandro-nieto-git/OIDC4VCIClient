@@ -14,7 +14,9 @@ dotenv.config();
 const app = express()
 
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'OPTIONS'], // Specify allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
   }));
 
 // Specify SSL/TLS options
