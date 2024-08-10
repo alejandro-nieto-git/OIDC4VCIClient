@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import { PORT } from "../utils/const";
 import fs from 'fs';
 import https from 'https';
+import http from 'http';
 import cors from 'cors';
 
 dotenv.config();
@@ -52,7 +53,7 @@ app.use((req: any, res: any, next: any) => {
     });
 });
 
-const server = https.createServer(app);
+const server = http.createServer(app);
 server.listen(PORT, () => {
     console.log(`Backend wallet de titulaciones digitales desplegado en: http://localhost:${PORT}`);
 });
