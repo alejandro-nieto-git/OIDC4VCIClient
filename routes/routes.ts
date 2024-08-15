@@ -57,7 +57,7 @@ router.post('/initiateIssuance', async (req: any, resp: any ) => {
 
 router.post('/tokenRequest', async (req: any, resp: any) => { 
     try {
-        wallet.tokenRequest(req.body.pin);
+        await wallet.tokenRequest(req.body.pin);
         resp.status(201);
         resp.end();
     } catch (error) {
