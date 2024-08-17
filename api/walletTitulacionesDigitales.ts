@@ -14,6 +14,8 @@ import { W3CVerifiableCredential } from '@sphereon/ssi-types';
 const debugLog = debug("Wallet Titulaciones Digitales:debug ");
 const errorLog = debug("Wallet Titulaciones Digitales:error ");
 
+console.log("This is the walletTitulacionesDigitales.ts file:" + process.env.DEBUG);
+
 /**
  * Represents a simplified wallet for demo purposes for managing digital credentials for Titulaciones Digitales UVa.
  */

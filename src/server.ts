@@ -1,16 +1,16 @@
+import dotenv from 'dotenv';
+dotenv.config();
 const express = require("express")
 const morgan = require("morgan")
 import router from "../routes/routes"
 import session from "express-session";
 import * as path from 'node:path';
-import dotenv from 'dotenv';
 import { PORT } from "../utils/const";
 import fs from 'fs';
 import https from 'https';
 import http from 'http';
 import cors from 'cors';
 
-dotenv.config();
 
 const app = express()
 
