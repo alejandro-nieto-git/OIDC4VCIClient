@@ -113,7 +113,7 @@ export class WalletTitulacionesDigitalesUVa {
 
     const credentialResponse = await this.client!.acquireCredentials({
       credentialDefinition: this.credentialToIssueDefinition as unknown as JsonLdIssuerCredentialDefinition,
-      credentialTypes: ['TitulacionDigital'],
+      credentialTypes: ['VerifiableCredential', 'TitulacionDigital'],
       proofCallbacks: callbacks ,
       format: 'jwt_vc_json',
       alg: Alg.ES256K,
