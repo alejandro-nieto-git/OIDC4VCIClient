@@ -117,7 +117,7 @@ export class WalletTitulacionesDigitalesUVa {
       proofCallbacks: callbacks ,
       format: 'jwt_vc_json',
       alg: Alg.ES256K,
-      kid: 'did:ethr:DE19d461d3E3Fc360D392B512fa09aBcB6A3cba3#key-1',
+      kid: process.env.USER_DID + '#key-1',
     });
 
     delete (credentialResponse.credential! as any).proof;
