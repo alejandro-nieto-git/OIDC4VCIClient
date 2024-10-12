@@ -1,5 +1,6 @@
 {
     "dependencies": {
+        "@sphereon/did-auth-siop": "^0.6.3",
         "@sphereon/oid4vci-client": "^0.10.2",
         "@sphereon/oid4vci-common": "^0.10.1",
         "@types/express-session": "^1.18.0",
