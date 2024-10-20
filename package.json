@@ -3,6 +3,7 @@
         "@sphereon/did-auth-siop": "^0.6.3",
         "@sphereon/oid4vci-client": "^0.10.2",
         "@sphereon/oid4vci-common": "^0.10.1",
+        "@sphereon/pe-models": "^0.0.5",
         "@types/express-session": "^1.18.0",
         "cors": "^2.8.5",
         "debug": "^4.3.4",
