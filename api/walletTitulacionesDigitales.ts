@@ -193,10 +193,5 @@ export class WalletTitulacionesDigitalesUVa {
     });
     const response = await this.op.submitAuthorizationResponse(authenticationResponseWithJWT);
     return authenticationResponseWithJWT;
-
-
-
-
-
   }
 }

@@ -16,11 +16,10 @@ import cors from 'cors';
 const app = express()
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: '*',
     methods: ['GET', 'POST', 'OPTIONS'], // Specify allowed methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
   }));
-
 
 // Logging
 app.use(morgan("dev"))
