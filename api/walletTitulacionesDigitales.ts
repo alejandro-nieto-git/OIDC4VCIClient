@@ -10,11 +10,12 @@ import {
 import { KeyLike } from 'jose';
 import { generateSignCallback } from '../utils/utils';
 import { W3CVerifiableCredential } from '@sphereon/ssi-types';
-import { URI } from '@sphereon/did-auth-siop/';
+import { URI, VPTokenLocation } from '@sphereon/did-auth-siop/';
 import { OP, PassBy, PresentationSignCallback, PresentationVerificationCallback, ResponseIss, ResponseType, Scope, SigningAlgo, SubjectType, SupportedVersion } from '@sphereon/did-auth-siop'
 
 import { IVerifyCallbackArgs, IVerifyCredentialResult, VerifyCallback, WDCErrors } from '@sphereon/wellknown-dids-client';
 import { CredentialMapper, IPresentation, IProofType, IVerifiableCredential, W3CVerifiablePresentation } from '@sphereon/ssi-types';
+import {PresentationExchange} from "@sphereon/did-auth-siop";
 
 const debugLog = debug("Wallet Titulaciones Digitales:debug ");
 const errorLog = debug("Wallet Titulaciones Digitales:error ");
@@ -32,6 +33,7 @@ export class WalletTitulacionesDigitalesUVa {
   private credentialToIssueDefinition: string;
   private credentials: any[];
   private op: OP;
+  private presentationSignCallback: PresentationSignCallback;
 
   /**
    * Initializes a WalletTitulacionesDigitales object.
@@ -48,7 +50,7 @@ export class WalletTitulacionesDigitalesUVa {
     this.credentials = [];
 
     const verifyCallback: VerifyCallback = async (_args) => ({ verified: true });
-    const presentationSignCallback: PresentationSignCallback = async (_args) => ({
+    this.presentationSignCallback = async (_args) => ({
         ...(_args.presentation as IPresentation),
         proof: {
           type: 'RsaSignature2018',
@@ -61,8 +63,10 @@ export class WalletTitulacionesDigitalesUVa {
         },
       });
 
+      let privateKey = process.env.USER_PRIVATE_KEY!.split("0x")[1];
+
       this.op = OP.builder()
-        .withPresentationSignCallback(presentationSignCallback)
+        .withPresentationSignCallback(this.presentationSignCallback)
         .withExpiresIn(1000)
         .withWellknownDIDVerifyCallback(verifyCallback)
         .withIssuer(ResponseIss.SELF_ISSUED_V2)
@@ -73,7 +77,7 @@ export class WalletTitulacionesDigitalesUVa {
           idTokenSigningAlgValuesSupported: [SigningAlgo.EDDSA],
           issuer: ResponseIss.SELF_ISSUED_V2,
           requestObjectSigningAlgValuesSupported: [SigningAlgo.EDDSA, SigningAlgo.ES256],
-          responseTypesSupported: [ResponseType.ID_TOKEN],
+          responseTypesSupported: [ResponseType.VP_TOKEN],
           vpFormats: { jwt_vc: { alg: [SigningAlgo.EDDSA] } },
           scopesSupported: [Scope.OPENID_DIDAUTHN, Scope.OPENID],
           subjectTypesSupported: [SubjectType.PAIRWISE],
@@ -173,14 +177,21 @@ export class WalletTitulacionesDigitalesUVa {
   }
 
   public async generateSIOPResponse(authRequestURI: URI){
+    console.log(this.credentials);
     const verifiedRequest = await this.op.verifyAuthorizationRequest(authRequestURI);
-    const authenticationResponseWithJWT = await this.op.createAuthorizationResponse(verifiedRequest);
+    let pex = new PresentationExchange({
+      allDIDs: [process.env.USER_DID!],
+      allVerifiableCredentials: [this.credentials[this.credentials.length - 1] ]
+    });
+    const verifiablePresentationResult = await pex.createVerifiablePresentation(verifiedRequest.payload!.claims.vp_token.presentation_definition, [this.credentials[this.credentials.length - 1]], this.presentationSignCallback, {});
+    const authenticationResponseWithJWT = await this.op.createAuthorizationResponse(verifiedRequest, {
+      presentationExchange: {
+        verifiablePresentations: [verifiablePresentationResult.verifiablePresentation],
+        vpTokenLocation: VPTokenLocation.AUTHORIZATION_RESPONSE,
+        presentationSubmission: verifiablePresentationResult.presentationSubmission,
+      },
+    });
     const response = await this.op.submitAuthorizationResponse(authenticationResponseWithJWT);
     return authenticationResponseWithJWT;
-
-
-
-
-
   }
 }
