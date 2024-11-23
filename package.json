@@ -1,0 +1,31 @@
+{
+    "dependencies": {
+        "@sphereon/did-auth-siop": "^0.6.3",
+        "@sphereon/oid4vci-client": "^0.10.2",
+        "@sphereon/oid4vci-common": "^0.10.1",
+        "@sphereon/pe-models": "^0.0.5",
+        "@types/express-session": "^1.18.0",
+        "cors": "^2.8.5",
+        "debug": "^4.3.4",
+        "did-resolver": "^4.1.0",
+        "dotenv": "^16.4.5",
+        "elliptic": "^6.5.5",
+        "express": "^4.19.2",
+        "express-session": "^1.18.0",
+        "jose": "^5.2.4",
+        "morgan": "^1.10.0"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.17",
+        "@types/debug": "^4.1.12",
+        "@types/elliptic": "^6.4.18",
+        "@types/node": "^20.12.7",
+        "nodemon": "^3.1.0"
+    },
+    "scripts": {
+        "dev": "nodemon src/server.ts",
+        "dev2": "ts-node src/server.ts",
+        "build": "rm -rf build/ && prettier --write src/ && tsc",
+        "clean": "rm -rf build/"
+    }
+}

@@ -1,0 +1,9 @@
+## Cuenta del usuario 
+address: 0xDE19d461d3E3Fc360D392B512fa09aBcB6A3cba3
+private key: 0x4780065056caee147bc72c8afcf19215d01a7684075eb36a67496325c3b6374f
+
+## Cuenta de la UVa como issuer
+~~address: 0x89bd0B47C4302435aA1bb2f621a447c34420B195~~
+~~private key: 0xb4751e5a65c395c500f85b22133f2f0dcd99cbdc1658f83a67cd2fcddc07e7ee~~
+address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+private key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 
