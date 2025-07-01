@@ -117,7 +117,7 @@ export class WalletTitulacionesDigitalesUVa {
     this.credentialToIssueDefinition = credentialDefinition;
 
     debugLog("Issuer is " + this.client.getIssuer()); 
-    debugLog("Credential endpoint is" + this.client.getCredentialEndpoint()); 
+    debugLog("Credential endpoint is " + this.client.getCredentialEndpoint()); 
     debugLog("Token endpoint is " + this.client.getAccessTokenEndpoint()); 
   }
 
@@ -132,7 +132,7 @@ export class WalletTitulacionesDigitalesUVa {
       debugLog("Token request initiated");
 
       const accessToken = await this.client!.acquireAccessToken({ pin: pin });
-      debugLog("Access Token acquired: " + accessToken);
+      debugLog("Access Token for preauth code flow acquired: " + accessToken);
 
       debugLog("Initiating Credential Request");
       let signCallback = generateSignCallback(this.keyInUse);
